@@ -45,7 +45,7 @@ const schema = {
     <title>{pageTitle}</title>
     <meta name="description" content={description} />
     <link rel="canonical" href={canonical} />
-    {noindex && <meta name="robots" content="noindex, nofollow" />}
+    {(noindex || import.meta.env.PUBLIC_PREVIEW) && <meta name="robots" content="noindex, nofollow" />}
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <link rel="alternate" type="application/rss+xml" title={`${site.name} Resources`} href="/rss.xml" />
     <link rel="sitemap" href="/sitemap-index.xml" />

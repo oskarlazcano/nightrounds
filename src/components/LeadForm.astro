@@ -135,6 +135,15 @@ const id = `form-${kind}`;
       showErrors(form, errors);
       if (Object.keys(errors).length) return;
 
+      // Static preview hosts have no form Worker: say so instead of failing or faking success.
+      if (import.meta.env.PUBLIC_PREVIEW) {
+        return setStatus(
+          form,
+          `<strong>This is a design preview.</strong><span>Forms are not connected yet, so nothing was sent.</span>`,
+          'bad',
+        );
+      }
+
       const button = form.querySelector<HTMLButtonElement>('button[type="submit"]')!;
       const label = button.textContent;
       button.disabled = true;

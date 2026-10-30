@@ -1,0 +1,141 @@
+---
+/**
+ * Template for every service detail page. Phase 2 service pages are added by
+ * copying a page in src/pages/services/ and filling the same props.
+ */
+import CtaBand from '../components/CtaBand.astro';
+import Icon from '../components/Icon.astro';
+import PageHero from '../components/PageHero.astro';
+import { formatPrice, services } from '../data/site';
+import Base from './Base.astro';
+
+interface Props {
+  slug: string;
+  lede: string;
+  included: string[];
+  boundaries: string[];
+  pricingNotes?: string[];
+}
+
+const { slug, lede, included, boundaries, pricingNotes = [] } = Astro.props;
+const service = services.find((s) => s.slug === slug)!;
+const others = services.filter((s) => s.flagship && s.slug !== slug);
+---
+
+<Base title={service.name} description={service.short}>
+  <PageHero eyebrow="Services" title={service.name} lede={lede}>
+    <a class="btn btn-primary" href="/book-a-call">Book a Free 20-Minute Call</a>
+    <a class="text-link" href="/contact?type=assessment">Request an assessment <Icon name="arrow" size={18} /></a>
+  </PageHero>
+
+  <slot name="intro" />
+
+  <section class="section">
+    <div class="wrap grid grid-2 scope">
+      <div class="card">
+        <h2>What’s included</h2>
+        <ul class="checks">{included.map((i) => <li>{i}</li>)}</ul>
+      </div>
+      <div class="card bounds">
+        <h2>Where it stops</h2>
+        <p class="muted">Written boundaries now mean no surprises later.</p>
+        <ul class="dashes">{boundaries.map((b) => <li>{b}</li>)}</ul>
+      </div>
+    </div>
+  </section>
+
+  <slot />
+
+  <section class="section price-section">
+    <div class="wrap split">
+      <div>
+        <span class="eyebrow">Pricing</span>
+        <h2>{formatPrice(service.price)}</h2>
+        <p class="muted">{service.type}</p>
+      </div>
+      <div>
+        {pricingNotes.length > 0 && <ul class="checks">{pricingNotes.map((n) => <li>{n}</li>)}</ul>}
+        <p class="see"><a class="text-link" href="/pricing">See all pricing <Icon name="arrow" size={18} /></a></p>
+      </div>
+    </div>
+  </section>
+
+  <section class="section related">
+    <div class="wrap">
+      <h2>Often paired with</h2>
+      <ul class="pair">
+        {
+          others.map((s) => (
+            <li>
+              <a href={s.href}>
+                <Icon name={s.icon} /> {s.name}
+              </a>
+            </li>
+          ))
+        }
+      </ul>
+    </div>
+  </section>
+
+  <CtaBand />
+</Base>
+
+<style>
+  .scope h2,
+  .related h2 {
+    font-size: 1.6rem;
+  }
+  .bounds {
+    background: var(--surface-2);
+  }
+  .dashes {
+    padding-left: 1.1em;
+    margin: 0;
+    display: grid;
+    gap: 10px;
+  }
+  .dashes li::marker {
+    content: '—  ';
+    color: var(--muted);
+  }
+  .price-section {
+    background: var(--surface);
+    border-block: 1px solid var(--line);
+  }
+  .see {
+    margin-top: 24px;
+  }
+  .related {
+    padding-bottom: 0;
+  }
+  .pair {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: grid;
+    gap: 14px;
+  }
+  @media (min-width: 760px) {
+    .pair {
+      grid-template-columns: repeat(2, 1fr);
+    }
+  }
+  .pair a {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    padding: 20px 22px;
+    border-radius: var(--radius);
+    border: 1px solid var(--line);
+    background: var(--surface);
+    font-weight: 700;
+    text-decoration: none;
+    color: var(--text);
+  }
+  .pair a:hover {
+    border-color: var(--anchor);
+  }
+  .pair :global(svg) {
+    color: var(--anchor);
+  }
+</style>

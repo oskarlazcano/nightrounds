@@ -1,0 +1,54 @@
+---
+/** Long-form text pages: legal pages and blog posts. */
+import PageHero from '../components/PageHero.astro';
+import Base from './Base.astro';
+
+interface Props {
+  title: string;
+  description: string;
+  eyebrow?: string;
+  meta?: string;
+  ogType?: 'website' | 'article';
+}
+const { title, description, eyebrow, meta, ogType } = Astro.props;
+---
+
+<Base title={title} description={description} ogType={ogType}>
+  <PageHero eyebrow={eyebrow} title={title} lede={meta} />
+  <section class="section">
+    <div class="wrap">
+      <article class="prose body"><slot /></article>
+    </div>
+  </section>
+  <slot name="after" />
+</Base>
+
+<style>
+  .body :global(h2) {
+    font-size: 1.75rem;
+    margin-top: 1.8em;
+  }
+  .body :global(h3) {
+    margin-top: 1.5em;
+  }
+  .body :global(ul),
+  .body :global(ol) {
+    padding-left: 1.3em;
+    margin: 0 0 1em;
+  }
+  .body :global(li) {
+    margin-bottom: 0.4em;
+  }
+  .body :global(blockquote) {
+    margin: 1.5em 0;
+    padding: 4px 0 4px 20px;
+    border-left: 3px solid var(--accent);
+    color: var(--muted);
+  }
+  .body :global(.draft) {
+    padding: 18px 20px;
+    border-radius: var(--radius);
+    border: 1.5px dashed var(--accent);
+    background: var(--surface);
+  }
+</style>

@@ -1,0 +1,63 @@
+---
+import Icon from './Icon.astro';
+
+interface Props {
+  title?: string;
+  body?: string;
+  secondary?: { label: string; href: string };
+}
+
+const {
+  title = 'Talk it through in 20 minutes.',
+  body = 'We cover your facility, current IT arrangements, overnight gaps, and the next useful step. No pressure, no slide deck.',
+  secondary = { label: 'Get the Care-Facility IT Checklist', href: '/checklist' },
+} = Astro.props;
+---
+
+<section class="cta-band">
+  <div class="wrap">
+    <div class="inner deep">
+      <div>
+        <h2>{title}</h2>
+        <p class="lede">{body}</p>
+      </div>
+      <div class="actions">
+        <a class="btn btn-primary" href="/book-a-call">Book a Free 20-Minute Call</a>
+        <a class="text-link" href={secondary.href}>{secondary.label} <Icon name="arrow" size={18} /></a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<style>
+  .cta-band {
+    padding-block: clamp(40px, 7vw, 88px);
+  }
+  .inner {
+    border-radius: var(--radius-lg);
+    padding: clamp(28px, 5vw, 56px);
+    display: grid;
+    gap: 28px;
+    align-items: center;
+    background:
+      radial-gradient(40rem 20rem at 110% -20%, color-mix(in srgb, var(--accent) 22%, transparent), transparent 60%),
+      var(--anchor-deep);
+  }
+  @media (min-width: 900px) {
+    .inner {
+      grid-template-columns: 1.4fr 1fr;
+    }
+  }
+  h2 {
+    margin-bottom: 12px;
+  }
+  .lede {
+    margin: 0;
+  }
+  .actions {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 18px;
+  }
+</style>

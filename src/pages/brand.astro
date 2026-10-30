@@ -1,0 +1,190 @@
+---
+import PageHero from '../components/PageHero.astro';
+import Wordmark from '../components/Wordmark.astro';
+import Base from '../layouts/Base.astro';
+
+const directions = [
+  {
+    id: 'a',
+    name: 'A · Night Teal',
+    note: 'Deep teal anchor, warm cream background, amber reserved for calls to action. Feels like a well-lit nurses’ station at night.',
+    swatches: [
+      ['Anchor', '#0e4a55'],
+      ['Deep', '#0a2c33'],
+      ['Background', '#f6f1e9'],
+      ['Surface', '#fffdf9'],
+      ['Accent (CTA)', '#f2b544'],
+      ['Text', '#1b2426'],
+    ],
+  },
+  {
+    id: 'b',
+    name: 'B · Harbor Navy',
+    note: 'Navy anchor, sand background, terracotta for calls to action. A little more traditional and corporate.',
+    swatches: [
+      ['Anchor', '#1e3557'],
+      ['Deep', '#111f36'],
+      ['Background', '#f4f0ea'],
+      ['Surface', '#fffdfa'],
+      ['Accent (CTA)', '#b4462f'],
+      ['Text', '#1a1f29'],
+    ],
+  },
+];
+---
+
+<Base title="Brand sheet" noindex>
+  <PageHero
+    eyebrow="Internal review · not indexed"
+    title="NightRounds brand sheet"
+    lede="Wordmark, two palette directions, and the type pairing. Use the buttons to preview the whole site in either direction, then pick one."
+  />
+
+  <section class="section">
+    <div class="wrap grid">
+      <div class="card marks">
+        <div class="mark-light"><Wordmark /></div>
+        <div class="mark-dark deep"><Wordmark tone="light" /></div>
+      </div>
+
+      <div class="grid grid-2">
+        {
+          directions.map((d) => (
+            <div class="card dir">
+              <h2>{d.name}</h2>
+              <p class="muted">{d.note}</p>
+              <ul class="sw">
+                {d.swatches.map(([label, hex]) => (
+                  <li>
+                    <span class="chip" style={`background:${hex}`} />
+                    <span>
+                      <strong>{label}</strong>
+                      <code>{hex}</code>
+                    </span>
+                  </li>
+                ))}
+              </ul>
+              <button class="btn btn-ghost" type="button" data-palette={d.id}>
+                Preview site in {d.name.split(' · ')[1]}
+              </button>
+            </div>
+          ))
+        }
+      </div>
+
+      <div class="card type">
+        <h2>Type pairing</h2>
+        <div class="grid grid-2">
+          <div>
+            <p class="label">Headings · Fraunces</p>
+            <p class="display">Care that never stops.</p>
+            <p class="muted">A warm, soft serif. Human and calm, not clinical. Self-hosted, open license (OFL).</p>
+          </div>
+          <div>
+            <p class="label">Body · Manrope</p>
+            <p class="body-sample">Help for login, workstation, and Microsoft 365 issues during the covered overnight window.</p>
+            <p class="muted">A clear, modern sans that reads well on phones. 17px minimum. Self-hosted, open license (OFL).</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+</Base>
+
+<script>
+  const current = () => document.documentElement.dataset.palette ?? 'a';
+  const sync = () =>
+    document.querySelectorAll<HTMLButtonElement>('[data-palette]').forEach((b) => {
+      b.setAttribute('aria-pressed', String(b.dataset.palette === current()));
+    });
+  document.querySelectorAll<HTMLButtonElement>('button[data-palette]').forEach((btn) =>
+    btn.addEventListener('click', () => {
+      const p = btn.dataset.palette!;
+      if (p === 'b') document.documentElement.dataset.palette = 'b';
+      else delete document.documentElement.dataset.palette;
+      try {
+        localStorage.setItem('nr-palette', p);
+      } catch {}
+      sync();
+    }),
+  );
+  sync();
+</script>
+
+<style>
+  .marks {
+    display: grid;
+    gap: 16px;
+    padding: 16px;
+  }
+  @media (min-width: 760px) {
+    .marks {
+      grid-template-columns: 1fr 1fr;
+    }
+  }
+  .marks > div {
+    display: grid;
+    place-items: center;
+    min-height: 180px;
+    border-radius: var(--radius);
+    transform: scale(1);
+  }
+  .marks :global(.wordmark) {
+    transform: scale(1.6);
+  }
+  .mark-light {
+    background: var(--bg);
+  }
+  .dir h2,
+  .type h2 {
+    font-size: 1.5rem;
+  }
+  .sw {
+    list-style: none;
+    padding: 0;
+    margin: 20px 0 24px;
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 14px;
+  }
+  .sw li {
+    display: flex;
+    gap: 12px;
+    align-items: center;
+    font-size: 0.9375rem;
+  }
+  .sw span:last-child {
+    display: grid;
+  }
+  .chip {
+    width: 44px;
+    height: 44px;
+    border-radius: 12px;
+    border: 1px solid rgb(0 0 0 / 0.1);
+    flex: none;
+  }
+  code {
+    color: var(--muted);
+  }
+  [aria-pressed='true'] {
+    background: var(--anchor);
+    color: var(--on-deep);
+    border-color: var(--anchor);
+  }
+  .label {
+    font-weight: 700;
+    font-size: 0.8125rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--anchor);
+  }
+  .display {
+    font-family: var(--font-display);
+    font-size: 2.6rem;
+    line-height: 1.1;
+    margin-bottom: 12px;
+  }
+  .body-sample {
+    font-size: 1.25rem;
+  }
+</style>

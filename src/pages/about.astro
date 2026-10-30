@@ -1,0 +1,144 @@
+---
+import CtaBand from '../components/CtaBand.astro';
+import PageHero from '../components/PageHero.astro';
+import Base from '../layouts/Base.astro';
+import { expertise, site } from '../data/site';
+
+const model = [
+  {
+    title: 'Remote-first',
+    body: 'Support is delivered remotely. Before service starts, we agree what can be handled remotely and who covers physical work at each site.',
+  },
+  {
+    title: 'Built around your overnight',
+    body: `${site.owner.name}’s workday falls during the US overnight shift. That’s why after-hours support is a core product here, not an expensive add-on.`,
+  },
+  {
+    title: 'Disclosed and authorized',
+    body: 'Where the work is done from, which tools are used, and who has access are explained during qualification and written into your service agreement, before anyone touches your systems.',
+  },
+];
+---
+
+<Base title="About" description={`NightRounds is led by ${site.owner.name}, with a background in healthcare-regulated IT, Microsoft 365, and identity management.`}>
+  <PageHero eyebrow="About" title="The IT partner that understands 24/7 care." />
+
+  <section class="section">
+    <div class="wrap split">
+      <div class="owner">
+        <div class="portrait" role={site.owner.photo ? undefined : 'img'} aria-label={site.owner.photo ? undefined : `Photo of ${site.owner.name} coming soon`}>
+          {site.owner.photo ? <img src={site.owner.photo} alt={site.owner.name} width="480" height="560" /> : <span>EO</span>}
+        </div>
+        <p class="name">{site.owner.name}</p>
+        <p class="muted">{site.owner.role}</p>
+      </div>
+      <div class="prose">
+        <h2>Calm, competent, and on the clock when you are.</h2>
+        <p class="lede">
+          NightRounds is a remote-first IT, security, and compliance firm. Long-term care is our focus; small healthcare
+          practices and businesses running Microsoft 365 are welcome too.
+        </p>
+        <p>
+          {site.owner.name} founded NightRounds after working in healthcare-regulated environments, including Medicaid
+          program administration and clinical research IT. That work is mostly about the unglamorous parts: who has
+          access to what, whether it’s documented, and what happens when something breaks at the wrong time.
+        </p>
+        <p>
+          The goal is simple: be the IT partner a facility can actually reach, that writes things down, and that tells
+          you plainly what is and isn’t covered.
+        </p>
+
+        <h3 class="sub">Background</h3>
+        <ul class="strip">{expertise.map((e) => <li class="pill">{e}</li>)}</ul>
+
+        {
+          site.owner.credentials.length > 0 && (
+            <>
+              <h3 class="sub">Certifications</h3>
+              <ul class="checks">{site.owner.credentials.map((c) => <li>{c}</li>)}</ul>
+            </>
+          )
+        }
+      </div>
+    </div>
+  </section>
+
+  <section class="section model">
+    <div class="wrap">
+      <span class="eyebrow">How we work</span>
+      <h2>The remote coverage model</h2>
+      <div class="grid grid-3 grid-collapse">
+        {
+          model.map((m) => (
+            <div class="card">
+              <h3>{m.title}</h3>
+              <p class="muted">{m.body}</p>
+            </div>
+          ))
+        }
+      </div>
+    </div>
+  </section>
+
+  <CtaBand title="Meet the person who’d actually do the work." />
+</Base>
+
+<style>
+  .owner {
+    max-width: 380px;
+  }
+  @media (min-width: 900px) {
+    .owner {
+      position: sticky;
+      top: 110px;
+    }
+  }
+  .portrait {
+    aspect-ratio: 6 / 7;
+    border-radius: var(--radius-lg);
+    background:
+      radial-gradient(circle at 70% 25%, color-mix(in srgb, var(--accent) 35%, transparent), transparent 45%),
+      linear-gradient(160deg, var(--anchor), var(--anchor-deep));
+    display: grid;
+    place-items: center;
+    overflow: hidden;
+    margin-bottom: 18px;
+  }
+  .portrait span {
+    font-family: var(--font-display);
+    font-size: 5rem;
+    color: var(--on-deep);
+    opacity: 0.85;
+  }
+  .portrait img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+  .name {
+    font-family: var(--font-display);
+    font-size: 1.5rem;
+    margin: 0;
+  }
+  .sub {
+    margin-top: 36px;
+    font-size: 1.2rem;
+  }
+  .strip {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+  }
+  .model {
+    background: var(--surface-2);
+  }
+  .model h2 {
+    margin-bottom: 32px;
+  }
+  .model p {
+    margin: 0;
+  }
+</style>

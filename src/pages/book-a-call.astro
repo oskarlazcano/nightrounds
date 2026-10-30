@@ -1,0 +1,151 @@
+---
+import Icon from '../components/Icon.astro';
+import PageHero from '../components/PageHero.astro';
+import Base from '../layouts/Base.astro';
+import { site } from '../data/site';
+
+const booking = site.links.booking;
+const expect = [
+  { title: 'Your facility', body: 'Type of care, number of sites and staff, and how your shifts run.' },
+  { title: 'Current IT', body: 'Who handles IT today, what’s working, and what isn’t.' },
+  { title: 'Overnight gaps', body: 'What happens now when something breaks after hours.' },
+  { title: 'Next useful step', body: 'Sometimes that’s a plan or an assessment. Sometimes it’s just advice.' },
+];
+---
+
+<Base title="Book a Free 20-Minute Call" description="Book a free 20-minute discovery call with NightRounds about your facility, current IT, and overnight gaps.">
+  <PageHero
+    eyebrow="Book a call"
+    title="A free 20-minute discovery call."
+    lede="Pick a time that works for you. You’ll get a calendar invite with a Microsoft Teams link, and you can reschedule or cancel from the invite."
+  />
+
+  <section class="section">
+    <div class="wrap split">
+      <div>
+        <h2 class="h">What we’ll cover</h2>
+        <ol class="expect">
+          {
+            expect.map((e) => (
+              <li>
+                <h3>{e.title}</h3>
+                <p class="muted">{e.body}</p>
+              </li>
+            ))
+          }
+        </ol>
+        <p class="phi"><Icon name="shield" size={18} /> {site.forms.noPhiNotice}</p>
+      </div>
+
+      <div class="booking card">
+        {
+          booking && site.links.bookingEmbed ? (
+            <>
+              <iframe src={booking} title="Book a discovery call with NightRounds" loading="lazy" />
+              <p class="fallback muted">
+                Calendar not loading? <a href={booking} target="_blank" rel="noopener">Open the booking page in a new tab</a>.
+              </p>
+            </>
+          ) : (
+            <div class="cta">
+              <Icon name="calendar" size={40} />
+              <h2 class="h">Choose a time</h2>
+              <p class="muted">Available times are shown in your own time zone.</p>
+              {booking ? (
+                <a class="btn btn-primary" href={booking} target="_blank" rel="noopener">
+                  Open the booking calendar
+                </a>
+              ) : (
+                <>
+                  <span class="btn btn-primary" aria-disabled="true">Booking calendar coming soon</span>
+                  <p class="muted small">
+                    Until it’s live, <a href="/contact">send a message</a> and we’ll reply with times.
+                  </p>
+                </>
+              )}
+            </div>
+          )
+        }
+      </div>
+    </div>
+  </section>
+</Base>
+
+<style>
+  .h {
+    font-size: 1.6rem;
+  }
+  .expect {
+    list-style: none;
+    padding: 0;
+    margin: 24px 0 28px;
+    display: grid;
+    gap: 4px;
+    counter-reset: e;
+  }
+  .expect li {
+    counter-increment: e;
+    position: relative;
+    padding: 0 0 18px 52px;
+  }
+  .expect li::before {
+    content: counter(e);
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    display: grid;
+    place-items: center;
+    background: var(--anchor-soft);
+    color: var(--anchor);
+    font-weight: 700;
+  }
+  .expect h3 {
+    font-size: 1.15rem;
+    margin-bottom: 4px;
+  }
+  .expect p {
+    margin: 0;
+  }
+  .phi {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+    font-weight: 600;
+    font-size: 0.9375rem;
+  }
+  .phi :global(svg) {
+    color: var(--anchor);
+  }
+  .booking {
+    min-height: 420px;
+    display: grid;
+  }
+  iframe {
+    width: 100%;
+    min-height: 720px;
+    border: 0;
+    border-radius: var(--radius);
+  }
+  .cta {
+    display: grid;
+    place-content: center;
+    justify-items: center;
+    text-align: center;
+    gap: 8px;
+  }
+  .cta :global(svg) {
+    color: var(--anchor);
+    margin-bottom: 8px;
+  }
+  [aria-disabled='true'] {
+    opacity: 0.6;
+    cursor: not-allowed;
+  }
+  .small {
+    font-size: 0.9375rem;
+    margin-top: 12px;
+  }
+</style>

@@ -1,0 +1,124 @@
+---
+// Decorative sample of an overnight ticket log + morning handoff.
+// Clearly labeled as a sample; no real client data (packet section 18).
+const entries = [
+  { time: '11:48 PM', title: 'Night nurse locked out after password expiry', note: 'Identity verified, reset, MFA re-registered', state: 'Resolved' },
+  { time: '1:20 AM', title: 'Station 3 workstation cannot reach the EHR', note: 'Network drive remapped; EHR vendor not needed', state: 'Resolved' },
+  { time: '3:05 AM', title: 'Label printer offline on the memory care wing', note: 'Needs on-site hands; logged for day team', state: 'Handed off' },
+];
+---
+
+<figure class="log" aria-label="Sample overnight ticket log">
+  <div class="head">
+    <span class="dot" aria-hidden="true"></span>
+    <span>Overnight log</span>
+    <span class="tag">Sample</span>
+  </div>
+  <ol>
+    {
+      entries.map((e) => (
+        <li>
+          <time>{e.time}</time>
+          <div>
+            <p class="title">{e.title}</p>
+            <p class="note">{e.note}</p>
+          </div>
+          <span class:list={['state', e.state === 'Resolved' ? 'ok' : 'next']}>{e.state}</span>
+        </li>
+      ))
+    }
+  </ol>
+  <figcaption>
+    <strong>7:00 AM handoff</strong> sent to the administrator and daytime IT: 2 resolved, 1 open with owner and next step.
+  </figcaption>
+</figure>
+
+<style>
+  .log {
+    margin: 0;
+    background: var(--surface);
+    border: 1px solid var(--line);
+    border-radius: var(--radius-lg);
+    box-shadow: 0 30px 60px -30px rgb(10 44 51 / 0.45);
+    overflow: hidden;
+    font-size: 0.9375rem;
+  }
+  .head {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 16px 20px;
+    background: var(--anchor-deep);
+    color: var(--on-deep);
+    font-weight: 700;
+  }
+  .dot {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background: var(--accent);
+    box-shadow: 0 0 0 4px color-mix(in srgb, var(--accent) 25%, transparent);
+  }
+  .tag {
+    margin-left: auto;
+    font-size: 0.75rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--on-deep-muted);
+    border: 1px solid rgb(255 255 255 / 0.2);
+    border-radius: 999px;
+    padding: 2px 10px;
+  }
+  ol {
+    list-style: none;
+    margin: 0;
+    padding: 6px 20px;
+  }
+  li {
+    display: grid;
+    grid-template-columns: 74px 1fr;
+    gap: 4px 14px;
+    padding: 16px 0;
+    border-bottom: 1px dashed var(--line);
+  }
+  li:last-child {
+    border-bottom: 0;
+  }
+  time {
+    font-weight: 700;
+    color: var(--anchor);
+    font-variant-numeric: tabular-nums;
+  }
+  .title {
+    margin: 0;
+    font-weight: 700;
+    line-height: 1.35;
+  }
+  .note {
+    margin: 4px 0 0;
+    color: var(--muted);
+    line-height: 1.45;
+  }
+  .state {
+    grid-column: 2;
+    justify-self: start;
+    font-size: 0.8125rem;
+    font-weight: 700;
+    padding: 3px 10px;
+    border-radius: 999px;
+  }
+  .ok {
+    background: var(--anchor-soft);
+    color: var(--anchor);
+  }
+  .next {
+    background: color-mix(in srgb, var(--accent) 22%, var(--surface));
+    color: var(--text);
+  }
+  figcaption {
+    padding: 16px 20px;
+    background: var(--surface-2);
+    color: var(--text);
+    line-height: 1.5;
+  }
+</style>

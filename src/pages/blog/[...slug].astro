@@ -1,0 +1,41 @@
+---
+import { render } from 'astro:content';
+import CtaBand from '../../components/CtaBand.astro';
+import Prose from '../../layouts/Prose.astro';
+import { formatDate, getPosts, tagSlug } from '../../lib/posts';
+
+export async function getStaticPaths() {
+  const posts = await getPosts();
+  return posts.map((post) => ({ params: { slug: post.id }, props: { post } }));
+}
+
+const { post } = Astro.props;
+const { Content } = await render(post);
+---
+
+<Prose title={post.data.title} description={post.data.description} eyebrow="Resources" meta={formatDate(post.data.date)} ogType="article">
+  <Content />
+  {
+    post.data.tags.length > 0 && (
+      <p class="tags">
+        Filed under:{' '}
+        {post.data.tags.map((t, i) => (
+          <>
+            {i > 0 && ', '}
+            <a href={`/blog/tags/${tagSlug(t)}`}>{t}</a>
+          </>
+        ))}
+      </p>
+    )
+  }
+  <CtaBand slot="after" />
+</Prose>
+
+<style>
+  .tags {
+    margin-top: 40px;
+    padding-top: 20px;
+    border-top: 1px solid var(--line);
+    color: var(--muted);
+  }
+</style>

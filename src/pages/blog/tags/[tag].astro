@@ -1,0 +1,28 @@
+---
+import PageHero from '../../../components/PageHero.astro';
+import PostList from '../../../components/PostList.astro';
+import Base from '../../../layouts/Base.astro';
+import { getPosts, tagSlug } from '../../../lib/posts';
+
+export async function getStaticPaths() {
+  const posts = await getPosts();
+  const tags = new Map<string, string>();
+  for (const p of posts) for (const t of p.data.tags) tags.set(tagSlug(t), t);
+  return [...tags].map(([slug, label]) => ({
+    params: { tag: slug },
+    props: { label, posts: posts.filter((p) => p.data.tags.some((t) => tagSlug(t) === slug)) },
+  }));
+}
+
+const { label, posts } = Astro.props;
+---
+
+<Base title={`Resources: ${label}`} description={`NightRounds resources tagged ${label}.`}>
+  <PageHero eyebrow="Resources" title={label} />
+  <section class="section">
+    <div class="wrap" style="max-width: 860px">
+      <PostList posts={posts} />
+      <p><a href="/blog">All resources</a></p>
+    </div>
+  </section>
+</Base>

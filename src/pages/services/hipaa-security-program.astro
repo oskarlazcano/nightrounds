@@ -1,0 +1,149 @@
+---
+import Icon from '../../components/Icon.astro';
+import ServicePage from '../../layouts/ServicePage.astro';
+import { entryOffer, formatPrice } from '../../data/site';
+
+const cycle = [
+  { title: 'Understand the gaps', body: 'Agreed assessment work across the systems in scope, with a risk register you own.' },
+  { title: 'Assign the fixes', body: 'Each finding gets a remediation owner and a date. We coordinate; your leadership decides.' },
+  { title: 'Organize the evidence', body: 'Policies, decisions, and proof of work kept in one place for surveys, insurers, and auditors.' },
+  { title: 'Review on a schedule', body: 'Periodic reviews keep the program current as staff, systems, and vendors change.' },
+];
+---
+
+<ServicePage
+  slug="hipaa-security-program"
+  lede="Understand the gaps, assign the fixes, and organize the evidence. Assessment and remediation support are scoped to your environment, with decisions owned by your leadership."
+  included={[
+    'Agreed assessment work',
+    'A risk register with remediation owners',
+    'Policy coordination',
+    'Evidence organization',
+    'Periodic program reviews',
+  ]}
+  boundaries={[
+    'We specify which administrative, physical, and technical work is included',
+    'We specify what your team or another adviser owns',
+    'This is support, not a compliance guarantee',
+    'Your organization keeps its compliance responsibilities',
+  ]}
+  pricingNotes={[
+    'Monthly subscription with a written scope',
+    'Assessments are fixed fee for a defined scope',
+    'Additional sites or systems are quoted before work starts',
+  ]}
+>
+  <section class="section cycle-section">
+    <div class="wrap">
+      <span class="eyebrow">How the program runs</span>
+      <h2>A program, not a binder on a shelf.</h2>
+      <ol class="cycle">
+        {
+          cycle.map((c, i) => (
+            <li>
+              <span class="n">{i + 1}</span>
+              <div>
+                <h3>{c.title}</h3>
+                <p class="muted">{c.body}</p>
+              </div>
+            </li>
+          ))
+        }
+      </ol>
+    </div>
+  </section>
+
+  <section class="section start">
+    <div class="wrap">
+      <div class="card entry">
+        <div>
+          <span class="eyebrow">A smaller first step</span>
+          <h2>{entryOffer.name}</h2>
+          <p class="muted">{entryOffer.summary}</p>
+          <ul class="checks">{entryOffer.deliverables.map((d) => <li>{d}</li>)}</ul>
+        </div>
+        <div class="side">
+          <p class="price">{formatPrice(entryOffer.price)}</p>
+          <a class="btn btn-primary" href="/contact?type=assessment">Request an assessment</a>
+          <p class="note"><Icon name="clipboard" size={18} /> {entryOffer.caveat}</p>
+        </div>
+      </div>
+    </div>
+  </section>
+</ServicePage>
+
+<style>
+  .cycle-section,
+  .start {
+    padding-top: 0;
+  }
+  .cycle {
+    list-style: none;
+    padding: 0;
+    margin: 32px 0 0;
+    display: grid;
+    gap: 14px;
+  }
+  @media (min-width: 900px) {
+    .cycle {
+      grid-template-columns: repeat(2, 1fr);
+    }
+  }
+  .cycle li {
+    display: flex;
+    gap: 18px;
+    padding: 22px;
+    border-radius: var(--radius);
+    background: var(--surface);
+    border: 1px solid var(--line);
+  }
+  .n {
+    flex: none;
+    display: grid;
+    place-items: center;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background: var(--anchor);
+    color: var(--on-deep);
+    font-weight: 700;
+  }
+  .cycle h3 {
+    font-size: 1.2rem;
+    margin-bottom: 6px;
+  }
+  .cycle p {
+    margin: 0;
+  }
+  .entry {
+    display: grid;
+    gap: 32px;
+  }
+  @media (min-width: 900px) {
+    .entry {
+      grid-template-columns: 1.5fr 1fr;
+    }
+  }
+  .side {
+    display: grid;
+    gap: 16px;
+    align-content: start;
+    justify-items: start;
+  }
+  .price {
+    margin: 0;
+    font-weight: 700;
+    font-size: 1.15rem;
+  }
+  .note {
+    display: flex;
+    gap: 10px;
+    margin: 0;
+    font-size: 0.9375rem;
+    color: var(--muted);
+  }
+  .note :global(svg) {
+    flex: none;
+    margin-top: 3px;
+  }
+</style>

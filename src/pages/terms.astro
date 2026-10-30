@@ -1,0 +1,18 @@
+---
+import Prose from '../layouts/Prose.astro';
+import { site } from '../data/site';
+---
+
+<Prose title="Terms of use" description={`Terms of use for the ${site.legalName} website.`} eyebrow="Legal">
+  <p class="draft">
+    <strong>Placeholder.</strong> The terms of use are supplied by the Owner and reviewed by counsel before launch.
+    Client service terms are a separate agreement and are not published here.
+  </p>
+  <h2>Website information</h2>
+  <p>
+    Content on this site is general information about {site.name}’s services. It is not legal or compliance advice,
+    and it does not create a service agreement.
+  </p>
+  <h2>Pricing</h2>
+  <p>Starting prices are indicative. Your written quote and service agreement govern what is included.</p>
+</Prose>

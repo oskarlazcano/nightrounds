@@ -1,0 +1,49 @@
+---
+import CtaBand from '../../components/CtaBand.astro';
+import PageHero from '../../components/PageHero.astro';
+import ServiceCard from '../../components/ServiceCard.astro';
+import Base from '../../layouts/Base.astro';
+import { services } from '../../data/site';
+
+const flagship = services.filter((s) => s.flagship);
+const more = services.filter((s) => !s.flagship);
+---
+
+<Base title="Services" description="After-hours help desk, managed IT and security, HIPAA security programs, assessments, and Microsoft 365 projects for care facilities and small businesses.">
+  <PageHero
+    eyebrow="Services"
+    title="Everything we do, in plain terms."
+    lede="Start with one service or combine them. Every plan comes with written scope, written boundaries, and a starting price before you commit."
+  />
+
+  <section class="section">
+    <div class="wrap">
+      <h2 class="h">Core plans</h2>
+      <div class="grid grid-3 grid-collapse">{flagship.map((s) => <ServiceCard service={s} />)}</div>
+    </div>
+  </section>
+
+  <section class="section more">
+    <div class="wrap">
+      <h2 class="h">Assessments, projects, and advisory</h2>
+      <p class="lede">Scoped to your environment. Detail pages for these are on the way; a discovery call is the fastest way to a quote.</p>
+      <div class="grid grid-2">{more.map((s) => <ServiceCard service={s} />)}</div>
+    </div>
+  </section>
+
+  <CtaBand />
+</Base>
+
+<style>
+  .h {
+    font-size: 1.75rem;
+    margin-bottom: 24px;
+  }
+  .more {
+    padding-top: 0;
+  }
+  .more .lede {
+    margin-top: -8px;
+    margin-bottom: 28px;
+  }
+</style>

@@ -1,0 +1,147 @@
+---
+import CtaBand from '../components/CtaBand.astro';
+import Icon from '../components/Icon.astro';
+import PageHero from '../components/PageHero.astro';
+import Base from '../layouts/Base.astro';
+import { entryOffer, formatPrice, services } from '../data/site';
+
+const subscriptions = services.filter((s) => s.flagship);
+const assessments = [entryOffer.name, 'HIPAA Security Risk Analysis', 'Cyber Insurance Readiness', 'Microsoft 365 Security Review'];
+const scoped = services.filter((s) => !s.flagship && s.slug !== 'assessments');
+---
+
+<Base title="Pricing" description="Starting prices for NightRounds subscriptions, fixed-fee assessments, and how scoped projects are quoted.">
+  <PageHero
+    eyebrow="Pricing"
+    title="Clear monthly pricing, written boundaries."
+    lede="Subscriptions show a starting price with the billing unit. Assessments are a fixed fee for a defined scope. Larger projects are quoted after a free discovery call."
+  />
+
+  <section class="section">
+    <div class="wrap">
+      <h2 class="h">Monthly plans</h2>
+      <div class="grid grid-3 grid-collapse">
+        {
+          subscriptions.map((s) => (
+            <article class="card plan">
+              <Icon name={s.icon} size={28} />
+              <h3>{s.name}</h3>
+              <p class="amount">{formatPrice(s.price)}</p>
+              <p class="muted unit">{s.type}</p>
+              <a class="text-link" href={s.href}>What’s included <Icon name="arrow" size={18} /></a>
+            </article>
+          ))
+        }
+      </div>
+
+      <div class="card every">
+        <h3>Every quote states</h3>
+        <ul class="checks cols">
+          <li>Billing unit (per user, per device, or per site)</li>
+          <li>Minimum commitment</li>
+          <li>Setup or onboarding costs</li>
+          <li>Included licenses</li>
+          <li>Coverage window, holidays, and weekends</li>
+          <li>Exclusions, in writing</li>
+        </ul>
+        <p class="muted note">
+          Shared nursing-station devices and part-time staff are counted once, so you’re not billed twice for the same
+          seat.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <section class="section split-section">
+    <div class="wrap grid grid-2">
+      <div class="card">
+        <span class="eyebrow">Fixed fee</span>
+        <h2 class="h">Assessments</h2>
+        <p class="muted">A set price for a defined scope. Extra sites or systems are quoted before work starts.</p>
+        <ul class="list">
+          {
+            assessments.map((a) => (
+              <li>
+                <span>{a}</span>
+                <span class="tag">{formatPrice({ amount: null, prefix: 'Fixed fee' })}</span>
+              </li>
+            ))
+          }
+        </ul>
+        <a class="btn btn-ghost" href="/contact?type=assessment">Request an assessment</a>
+      </div>
+      <div class="card">
+        <span class="eyebrow">Scoped</span>
+        <h2 class="h">Projects and advisory</h2>
+        <p class="muted">Every environment is different, so these are scoped after a free discovery call.</p>
+        <ul class="list">
+          {
+            scoped.map((s) => (
+              <li>
+                <span>{s.name}</span>
+                <span class="tag">{s.price === 'scoped' ? 'Scoped on a call' : formatPrice(s.price)}</span>
+              </li>
+            ))
+          }
+        </ul>
+        <a class="btn btn-ghost" href="/book-a-call">Book a discovery call</a>
+      </div>
+    </div>
+  </section>
+
+  <CtaBand title="Get a real number for your facility." />
+</Base>
+
+<style>
+  .h {
+    font-size: 1.75rem;
+    margin-bottom: 20px;
+  }
+  .plan :global(svg) {
+    color: var(--anchor);
+    margin-bottom: 16px;
+  }
+  .amount {
+    font-family: var(--font-display);
+    font-size: 1.5rem;
+    margin: 4px 0 2px;
+    color: var(--anchor-deep);
+  }
+  .unit {
+    margin-bottom: 20px;
+  }
+  .every {
+    margin-top: 20px;
+    background: var(--surface-2);
+  }
+  @media (min-width: 760px) {
+    .cols {
+      grid-template-columns: repeat(2, 1fr);
+    }
+  }
+  .note {
+    margin: 20px 0 0;
+  }
+  .split-section {
+    padding-top: 0;
+  }
+  .list {
+    list-style: none;
+    padding: 0;
+    margin: 0 0 24px;
+  }
+  .list li {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    gap: 4px 16px;
+    padding: 14px 0;
+    border-bottom: 1px solid var(--line);
+    font-weight: 600;
+  }
+  .tag {
+    color: var(--muted);
+    font-weight: 500;
+    font-size: 0.9375rem;
+  }
+</style>

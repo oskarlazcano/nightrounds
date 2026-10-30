@@ -1,0 +1,120 @@
+---
+import { services, site } from '../data/site';
+import Wordmark from './Wordmark.astro';
+
+const year = new Date().getFullYear();
+const built = services.filter((s) => s.href);
+---
+
+<footer class="site-footer deep">
+  <div class="wrap cols">
+    <div class="about">
+      <Wordmark tone="light" />
+      <p class="muted">
+        IT, security, and HIPAA support for long-term care and healthcare organizations. Remote-first, built
+        around the overnight shift.
+      </p>
+      <ul class="contact">
+        {site.contact.email && <li><a href={`mailto:${site.contact.email}`}>{site.contact.email}</a></li>}
+        {site.contact.phone && <li><a href={`tel:${site.contact.phone.replace(/[^+\d]/g, '')}`}>{site.contact.phone}</a></li>}
+        <li><a href="/contact">Contact form</a></li>
+      </ul>
+    </div>
+
+    <nav aria-label="Services">
+      <h2>Services</h2>
+      <ul>
+        {built.map((s) => <li><a href={s.href}>{s.name}</a></li>)}
+        <li><a href="/services">All services</a></li>
+      </ul>
+    </nav>
+
+    <nav aria-label="Company">
+      <h2>Company</h2>
+      <ul>
+        <li><a href="/long-term-care">Long-term care</a></li>
+        <li><a href="/pricing">Pricing</a></li>
+        <li><a href="/about">About</a></li>
+        <li><a href="/blog">Resources</a></li>
+        {site.links.supportPortal && <li><a href={site.links.supportPortal}>Existing clients: support</a></li>}
+      </ul>
+    </nav>
+
+    <div class="next">
+      <h2>Next step</h2>
+      <p class="muted">A free 20-minute call about your facility, current IT, and overnight gaps.</p>
+      <a class="btn btn-primary" href="/book-a-call">Book a Free 20-Minute Call</a>
+    </div>
+  </div>
+
+  <div class="wrap legal">
+    <p>&copy; {year} {site.legalName}</p>
+    <ul>
+      <li><a href="/privacy">Privacy</a></li>
+      <li><a href="/terms">Terms of use</a></li>
+      <li><a href="/accessibility">Accessibility</a></li>
+    </ul>
+  </div>
+</footer>
+
+<style>
+  .site-footer {
+    padding-top: clamp(56px, 8vw, 88px);
+    font-size: 0.9875rem;
+  }
+  .cols {
+    display: grid;
+    gap: 40px;
+  }
+  @media (min-width: 760px) {
+    .cols {
+      grid-template-columns: 1.4fr 1fr 1fr 1.3fr;
+    }
+  }
+  .about p {
+    margin-top: 18px;
+    max-width: 34ch;
+  }
+  h2 {
+    font-family: var(--font-body);
+    font-size: 0.8125rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--on-deep-muted);
+    margin-bottom: 16px;
+  }
+  ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: grid;
+    gap: 10px;
+  }
+  a:not(.btn) {
+    text-decoration: none;
+  }
+  a:not(.btn):hover {
+    text-decoration: underline;
+  }
+  .contact {
+    margin-top: 8px;
+  }
+  .legal {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    gap: 12px 24px;
+    margin-top: 56px;
+    padding-block: 24px 32px;
+    border-top: 1px solid rgb(255 255 255 / 0.12);
+    color: var(--on-deep-muted);
+  }
+  .legal p {
+    margin: 0;
+  }
+  .legal ul {
+    display: flex;
+    gap: 20px;
+  }
+</style>

@@ -1,0 +1,102 @@
+---
+import Icon from '../../components/Icon.astro';
+import ServicePage from '../../layouts/ServicePage.astro';
+import { coverageMessage, site } from '../../data/site';
+
+const coverage = coverageMessage();
+
+const flow = [
+  { icon: 'phone' as const, title: 'Staff reach a person', body: 'Through the agreed contact route for your plan. No phone tree, no voicemail-only queue.' },
+  { icon: 'shield' as const, title: 'We verify who’s asking', body: 'Identity checks before any reset or access change, so a call can’t be used to take over an account.' },
+  { icon: 'ticket' as const, title: 'Fix it or contain it', body: 'Approved access fixes happen right away. Everything is logged in the ticket history.' },
+  { icon: 'handoff' as const, title: 'Morning handoff', body: 'Anything left open goes to your administrator and daytime IT with an owner and a next step.' },
+];
+---
+
+<ServicePage
+  slug="after-hours-help-desk"
+  lede="Help for login, workstation, Microsoft 365, and approved application-access issues during the covered overnight window, with a documented handoff for anything that needs follow-through."
+  included={[
+    'Remote triage for supported users and devices',
+    'Identity verification before resets and access changes',
+    'Approved access fixes: passwords, MFA, locked accounts, workstation sign-in',
+    'Microsoft 365 and approved application-access help',
+    'Full ticket history you can review',
+    'Escalation and a written handoff to your daytime team',
+  ]}
+  boundaries={[
+    'Covered hours only, as published in your plan',
+    'EHR access troubleshooting is not clinical workflow advice or an EHR vendor uptime guarantee',
+    'On-site dispatch requires a separate arrangement',
+    'Incident forensics requires a separate arrangement',
+    'Patient-safety events follow your facility’s emergency and downtime procedures',
+  ]}
+  pricingNotes={[
+    'Your plan defines the covered sites and user count',
+    'Coverage window, holidays, and weekend details are shown before you buy',
+    'Works alongside your current IT provider (co-managed)',
+  ]}
+>
+  <section class="section deep" slot="intro">
+    <div class="wrap">
+      <div class="split">
+        <div>
+          <span class="eyebrow">How overnight coverage works</span>
+          <h2>{coverage.heading}</h2>
+        </div>
+        <div>
+          <p class="lede">{coverage.body}</p>
+          <p class="muted">{site.coverage.planNote}</p>
+          <p><strong>Coverage window:</strong> {site.coverage.window ?? 'published here before launch.'}</p>
+        </div>
+      </div>
+      <ol class="flow">
+        {
+          flow.map((f) => (
+            <li>
+              <Icon name={f.icon} />
+              <h3>{f.title}</h3>
+              <p class="muted">{f.body}</p>
+            </li>
+          ))
+        }
+      </ol>
+    </div>
+  </section>
+</ServicePage>
+
+<style>
+  .flow {
+    list-style: none;
+    padding: 0;
+    margin: clamp(36px, 5vw, 56px) 0 0;
+    display: grid;
+    gap: 16px;
+  }
+  @media (min-width: 760px) {
+    .flow {
+      grid-template-columns: repeat(2, 1fr);
+    }
+  }
+  @media (min-width: 1080px) {
+    .flow {
+      grid-template-columns: repeat(4, 1fr);
+    }
+  }
+  .flow li {
+    padding: 24px;
+    border-radius: var(--radius);
+    border: 1px solid rgb(255 255 255 / 0.14);
+    background: rgb(255 255 255 / 0.04);
+  }
+  .flow :global(svg) {
+    color: var(--accent);
+    margin-bottom: 14px;
+  }
+  .flow h3 {
+    font-size: 1.2rem;
+  }
+  .flow p {
+    margin: 0;
+  }
+</style>

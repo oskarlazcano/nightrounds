@@ -1,0 +1,94 @@
+---
+import type { CollectionEntry } from 'astro:content';
+import { formatDate, tagSlug } from '../lib/posts';
+
+interface Props {
+  posts: CollectionEntry<'blog'>[];
+}
+const { posts } = Astro.props;
+---
+
+{
+  posts.length === 0 ? (
+    <p class="empty card">New resources are on the way. In the meantime, <a href="/checklist">grab the readiness checklist</a>.</p>
+  ) : (
+    <ul class="posts">
+      {posts.map((p) => (
+        <li class="card">
+          <p class="meta">
+            <time datetime={p.data.date.toISOString()}>{formatDate(p.data.date)}</time>
+            {p.data.draft && <span class="draft">Draft</span>}
+          </p>
+          <h2>
+            <a href={`/blog/${p.id}`}>{p.data.title}</a>
+          </h2>
+          <p class="muted">{p.data.description}</p>
+          {p.data.tags.length > 0 && (
+            <ul class="tags">
+              {p.data.tags.map((t) => (
+                <li>
+                  <a href={`/blog/tags/${tagSlug(t)}`}>{t}</a>
+                </li>
+              ))}
+            </ul>
+          )}
+        </li>
+      ))}
+    </ul>
+  )
+}
+
+<style>
+  .posts {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: grid;
+    gap: 18px;
+  }
+  .meta {
+    display: flex;
+    gap: 12px;
+    align-items: center;
+    margin: 0 0 8px;
+    font-size: 0.9375rem;
+    color: var(--muted);
+  }
+  .draft {
+    font-size: 0.75rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    padding: 2px 8px;
+    border-radius: 999px;
+    background: color-mix(in srgb, var(--accent) 25%, var(--surface));
+    color: var(--text);
+  }
+  h2 {
+    font-size: 1.5rem;
+  }
+  h2 a {
+    color: inherit;
+    text-decoration: none;
+  }
+  h2 a:hover {
+    text-decoration: underline;
+  }
+  .tags {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+  .tags a {
+    display: inline-block;
+    padding: 4px 12px;
+    border-radius: 999px;
+    background: var(--anchor-soft);
+    font-size: 0.875rem;
+    font-weight: 600;
+    text-decoration: none;
+  }
+</style>

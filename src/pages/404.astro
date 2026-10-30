@@ -1,0 +1,13 @@
+---
+import PageHero from '../components/PageHero.astro';
+import Base from '../layouts/Base.astro';
+---
+
+<Base title="Page not found" noindex>
+  <PageHero eyebrow="404" title="That page isn’t here." lede="It may have moved. These are the places most people are looking for:">
+    <a class="btn btn-primary" href="/book-a-call">Book a Free 20-Minute Call</a>
+    <a class="text-link" href="/services">Services</a>
+    <a class="text-link" href="/pricing">Pricing</a>
+    <a class="text-link" href="/">Home</a>
+  </PageHero>
+</Base>

@@ -1,0 +1,30 @@
+---
+import Prose from '../layouts/Prose.astro';
+import { site } from '../data/site';
+---
+
+<Prose title="Privacy policy" description={`How ${site.legalName} handles information submitted through this website.`} eyebrow="Legal">
+  <p class="draft">
+    <strong>Placeholder.</strong> The final privacy policy is supplied by the Owner and reviewed by appropriate advisers
+    before launch. The outline below reflects how the site is built, so the final text can be checked against it.
+  </p>
+  <h2>What this site collects</h2>
+  <ul>
+    <li>Contact and assessment forms: name, work email, organization, and optionally phone and a short message.</li>
+    <li>Checklist download: name and work email.</li>
+    <li>No file uploads, chat widgets, session recording, or advertising pixels.</li>
+  </ul>
+  <h2>No patient information</h2>
+  <p>
+    This site is for business inquiries only. Please do not include patient or resident information. If it arrives by
+    mistake, access is restricted and it is handled under our incident process.
+  </p>
+  <h2>Where submissions go</h2>
+  <p>Form submissions are delivered to {site.legalName}’s business mailbox. They are not stored by a third-party form vendor.</p>
+  <h2>Analytics</h2>
+  <p>Cookieless, privacy-first website analytics. To be confirmed against the final configuration before launch.</p>
+  <h2>Bookings</h2>
+  <p>Discovery calls are booked through Microsoft Bookings, which has its own privacy terms.</p>
+  <h2>Contact</h2>
+  <p>Questions about this policy: <a href="/contact">contact us</a>.</p>
+</Prose>

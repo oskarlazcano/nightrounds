@@ -1,0 +1,52 @@
+---
+interface Props {
+  tone?: 'default' | 'light';
+}
+const { tone = 'default' } = Astro.props;
+---
+
+<span class:list={['wordmark', tone]}>
+  <svg class="mark" viewBox="0 0 32 32" aria-hidden="true" focusable="false">
+    <circle cx="16" cy="16" r="15" class="ring"></circle>
+    <path class="moon" d="M19.6 8.4a8 8 0 1 0 4 12.3 6.4 6.4 0 0 1-4-12.3Z"></path>
+  </svg>
+  <span class="name">Night<span>Rounds</span></span>
+</span>
+
+<style>
+  .wordmark {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    color: var(--anchor-deep);
+  }
+  .mark {
+    width: 32px;
+    height: 32px;
+    flex: none;
+  }
+  .ring {
+    fill: var(--anchor);
+  }
+  .moon {
+    fill: var(--accent);
+  }
+  .name {
+    font-family: var(--font-display);
+    font-size: 1.45rem;
+    font-weight: 600;
+    letter-spacing: -0.02em;
+    font-variation-settings: 'opsz' 48, 'SOFT' 50;
+    line-height: 1;
+  }
+  .name span {
+    font-weight: 400;
+    font-style: italic;
+  }
+  .light {
+    color: var(--on-deep);
+  }
+  .light .ring {
+    fill: rgb(255 255 255 / 0.1);
+  }
+</style>

@@ -1,0 +1,297 @@
+---
+import { checklist, site } from '../data/site';
+import Icon from './Icon.astro';
+
+interface Props {
+  kind: 'inquiry' | 'checklist' | 'assessment';
+  submitLabel?: string;
+}
+
+const { kind } = Astro.props;
+const full = kind !== 'checklist';
+const submitLabel =
+  Astro.props.submitLabel ??
+  { inquiry: 'Send message', checklist: 'Get the checklist', assessment: 'Request the assessment' }[kind];
+const id = `form-${kind}`;
+---
+
+<form
+  class="lead-form"
+  id={id}
+  action={site.forms.endpoint}
+  method="post"
+  novalidate
+  data-kind={kind}
+  data-download={kind === 'checklist' ? site.links.checklistPdf : undefined}
+>
+  <input type="hidden" name="kind" value={kind} />
+  <!-- Honeypot: hidden from people and assistive tech, bots tend to fill it -->
+  <div class="hp" aria-hidden="true">
+    <label>Leave this empty <input type="text" name="company_site" tabindex="-1" autocomplete="off" /></label>
+  </div>
+
+  <div class="fields">
+    <div class="field">
+      <label for={`${id}-name`}>Name <span class="req">(required)</span></label>
+      <input id={`${id}-name`} name="name" type="text" autocomplete="name" required maxlength="120" />
+    </div>
+    <div class="field">
+      <label for={`${id}-email`}>Work email <span class="req">(required)</span></label>
+      <input id={`${id}-email`} name="email" type="email" autocomplete="email" required maxlength="200" />
+    </div>
+    {
+      full && (
+        <>
+          <div class="field">
+            <label for={`${id}-org`}>
+              Organization <span class="req">(required)</span>
+            </label>
+            <input id={`${id}-org`} name="organization" type="text" autocomplete="organization" required maxlength="160" />
+          </div>
+          <div class="field">
+            <label for={`${id}-phone`}>
+              Phone <span class="opt">(optional)</span>
+            </label>
+            <input id={`${id}-phone`} name="phone" type="tel" autocomplete="tel" maxlength="40" />
+          </div>
+          <div class="field wide">
+            <label for={`${id}-message`}>
+              {kind === 'assessment' ? 'What would you like reviewed?' : 'How can we help?'} <span class="opt">(optional)</span>
+            </label>
+            <textarea id={`${id}-message`} name="message" rows="4" maxlength="2000" aria-describedby={`${id}-phi`} />
+          </div>
+        </>
+      )
+    }
+  </div>
+
+  {site.forms.turnstileSiteKey && <div class="cf-turnstile" data-sitekey={site.forms.turnstileSiteKey} data-theme="light" />}
+
+  <p class="phi" id={`${id}-phi`}>
+    <Icon name="shield" size={18} />
+    <span><strong>{site.forms.noPhiNotice}</strong> This form is for business inquiries only.</span>
+  </p>
+
+  <div class="submit-row">
+    <button class="btn btn-primary" type="submit">{submitLabel}</button>
+    {kind === 'checklist' && <p class="small muted">No newsletter sign-up. {checklist.label}</p>}
+  </div>
+
+  <div class="status" role="status" aria-live="polite" tabindex="-1"></div>
+</form>
+
+{site.forms.turnstileSiteKey && <script is:inline src="https://challenges.cloudflare.com/turnstile/v0/api.js" async defer />}
+
+<script>
+  type FieldErrors = Record<string, string>;
+
+  const messages: Record<string, string> = {
+    name: 'Please enter your name.',
+    email: 'Please enter a valid work email, like name@facility.org.',
+    organization: 'Please enter your organization.',
+  };
+
+  function validate(form: HTMLFormElement): FieldErrors {
+    const errors: FieldErrors = {};
+    for (const input of form.querySelectorAll<HTMLInputElement>('input[required]')) {
+      if (!input.checkValidity() || !input.value.trim()) errors[input.name] = messages[input.name] ?? 'Required.';
+    }
+    return errors;
+  }
+
+  function showErrors(form: HTMLFormElement, errors: FieldErrors) {
+    form.querySelectorAll('.error').forEach((el) => el.remove());
+    form.querySelectorAll('[aria-invalid]').forEach((el) => el.removeAttribute('aria-invalid'));
+    let first: HTMLElement | null = null;
+    for (const [name, msg] of Object.entries(errors)) {
+      const input = form.querySelector<HTMLInputElement>(`[name="${name}"]`);
+      if (!input) continue;
+      const err = document.createElement('p');
+      err.className = 'error';
+      err.id = `${input.id}-error`;
+      err.textContent = msg;
+      input.after(err);
+      input.setAttribute('aria-invalid', 'true');
+      input.setAttribute('aria-describedby', err.id);
+      first ??= input;
+    }
+    first?.focus();
+  }
+
+  function setStatus(form: HTMLFormElement, html: string, tone: 'ok' | 'bad') {
+    const status = form.querySelector<HTMLElement>('.status')!;
+    status.className = `status ${tone}`;
+    status.innerHTML = html;
+    status.focus();
+  }
+
+  for (const form of document.querySelectorAll<HTMLFormElement>('.lead-form')) {
+    // One key per page view lets the server drop accidental double submits.
+    const submissionId = crypto.randomUUID();
+
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const errors = validate(form);
+      showErrors(form, errors);
+      if (Object.keys(errors).length) return;
+
+      const button = form.querySelector<HTMLButtonElement>('button[type="submit"]')!;
+      const label = button.textContent;
+      button.disabled = true;
+      button.textContent = 'Sending…';
+
+      const data = Object.fromEntries(new FormData(form)) as Record<string, string>;
+      data.submissionId = submissionId;
+
+      try {
+        // The form Worker only runs on Cloudflare; in local dev, simulate success.
+        const res = import.meta.env.DEV
+          ? new Response('{"ok":true}', { status: 200 })
+          : await fetch(form.action, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(data),
+        });
+        const body = await res.json().catch(() => ({}));
+        if (!res.ok) {
+          if (body.fields) return showErrors(form, body.fields);
+          throw new Error(body.error ?? 'Request failed');
+        }
+
+        const download = form.dataset.download;
+        form.querySelector('.fields')?.setAttribute('hidden', '');
+        form.querySelector('.submit-row')?.setAttribute('hidden', '');
+        setStatus(
+          form,
+          download
+            ? `<strong>Thanks, it's yours.</strong> <a class="btn btn-primary" href="${download}" download>Download the checklist (PDF)</a><span>Want help working through it? <a href="/book-a-call">Book a free 20-minute call</a>.</span>`
+            : `<strong>Thanks, we have your message.</strong><span>New inquiries are reviewed within one business day. If it's easier, <a href="/book-a-call">pick a time for a call</a>.</span>`,
+          'ok',
+        );
+      } catch {
+        setStatus(
+          form,
+          `<strong>Your message did not send.</strong><span>Nothing was lost: your entries are still in the form, so please try again. If it keeps failing, use the booking page instead.</span>`,
+          'bad',
+        );
+      } finally {
+        button.disabled = false;
+        button.textContent = label;
+      }
+    });
+  }
+</script>
+
+<style>
+  .lead-form {
+    display: grid;
+    gap: 20px;
+  }
+  .fields {
+    display: grid;
+    gap: 18px;
+  }
+  @media (min-width: 640px) {
+    .fields {
+      grid-template-columns: 1fr 1fr;
+    }
+    .wide {
+      grid-column: 1 / -1;
+    }
+  }
+  .field {
+    display: grid;
+    gap: 6px;
+  }
+  label {
+    font-weight: 700;
+    font-size: 0.9875rem;
+  }
+  .req,
+  .opt {
+    font-weight: 500;
+    color: var(--muted);
+    font-size: 0.875rem;
+  }
+  input,
+  textarea {
+    width: 100%;
+    font: inherit;
+    color: var(--text);
+    background: var(--surface);
+    border: 1.5px solid color-mix(in srgb, var(--muted) 55%, var(--line));
+    border-radius: 12px;
+    padding: 13px 14px;
+    min-height: 52px;
+  }
+  textarea {
+    resize: vertical;
+  }
+  input:focus-visible,
+  textarea:focus-visible {
+    outline: 3px solid var(--focus);
+    outline-offset: 1px;
+    border-color: var(--anchor);
+  }
+  [aria-invalid='true'] {
+    border-color: var(--focus);
+  }
+  .lead-form :global(.error) {
+    margin: 2px 0 0;
+    color: var(--focus);
+    font-weight: 600;
+    font-size: 0.9375rem;
+  }
+  .phi {
+    display: flex;
+    gap: 10px;
+    align-items: flex-start;
+    margin: 0;
+    padding: 14px 16px;
+    border-radius: 12px;
+    background: var(--anchor-soft);
+    color: var(--text);
+    font-size: 0.9375rem;
+  }
+  .phi :global(svg) {
+    flex: none;
+    margin-top: 3px;
+    color: var(--anchor);
+  }
+  .submit-row {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 12px 20px;
+  }
+  .small {
+    font-size: 0.875rem;
+    margin: 0;
+    max-width: 40ch;
+  }
+  .status:empty {
+    display: none;
+  }
+  .status {
+    display: grid;
+    gap: 12px;
+    justify-items: start;
+    padding: 18px 20px;
+    border-radius: 14px;
+    border: 1px solid var(--line);
+    background: var(--surface);
+  }
+  .status.ok {
+    border-color: color-mix(in srgb, var(--anchor) 35%, var(--line));
+  }
+  .status.bad {
+    border-color: var(--focus);
+  }
+  .hp {
+    position: absolute;
+    left: -9999px;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+  }
+</style>

@@ -1,0 +1,34 @@
+---
+import LeadForm from '../components/LeadForm.astro';
+import PageHero from '../components/PageHero.astro';
+import Base from '../layouts/Base.astro';
+import { checklist } from '../data/site';
+---
+
+<Base title={checklist.title} description="A free planning checklist for care-facility administrators covering accounts, shared workstations, updates, vendors, recovery, and after-hours escalation.">
+  <PageHero eyebrow="Free download" title={checklist.title} lede="A practical walk-through for administrators, owners, and directors of nursing. Fill in two fields and download it right away." />
+
+  <section class="section">
+    <div class="wrap split">
+      <div>
+        <h2 class="h">What it covers</h2>
+        <ul class="checks">{checklist.covers.map((c) => <li>{c}</li>)}</ul>
+        <p class="muted label">{checklist.label}</p>
+      </div>
+      <div class="card">
+        <LeadForm kind="checklist" />
+      </div>
+    </div>
+  </section>
+</Base>
+
+<style>
+  .h {
+    font-size: 1.6rem;
+    margin-bottom: 20px;
+  }
+  .label {
+    margin-top: 24px;
+    font-size: 0.9375rem;
+  }
+</style>

@@ -1,0 +1,108 @@
+---
+import { formatPrice, type Service } from '../data/site';
+import Icon from './Icon.astro';
+
+interface Props {
+  service: Service;
+  showPrice?: boolean;
+}
+const { service, showPrice = true } = Astro.props;
+---
+
+<article class="card service">
+  <span class="icon"><Icon name={service.icon} size={26} /></span>
+  <h3>
+    {service.href ? <a href={service.href}>{service.name}</a> : service.name}
+  </h3>
+  <p>{service.short}</p>
+  <footer>
+    {
+      showPrice && (
+        <p class="price">
+          <span class="type">{service.type}</span>
+          {formatPrice(service.price)}
+        </p>
+      )
+    }
+    {service.href && <span class="more" aria-hidden="true">Details <Icon name="arrow" size={18} /></span>}
+  </footer>
+</article>
+
+<style>
+  .service {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    transition: border-color 0.15s ease, box-shadow 0.15s ease, transform 0.15s ease;
+  }
+  .service:has(h3 a):hover {
+    border-color: color-mix(in srgb, var(--anchor) 40%, var(--line));
+    box-shadow: var(--shadow);
+  }
+  @media (prefers-reduced-motion: no-preference) {
+    .service:has(h3 a):hover {
+      transform: translateY(-2px);
+    }
+  }
+  .icon {
+    display: inline-grid;
+    place-items: center;
+    width: 52px;
+    height: 52px;
+    border-radius: 14px;
+    background: var(--anchor-soft);
+    color: var(--anchor);
+    margin-bottom: 20px;
+  }
+  h3 a {
+    color: inherit;
+    text-decoration: none;
+  }
+  /* Whole card is clickable via the heading link */
+  h3 a::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+  }
+  h3 a:focus-visible {
+    outline: none;
+  }
+  .service:has(h3 a:focus-visible) {
+    outline: 3px solid var(--focus);
+    outline-offset: 3px;
+  }
+  p {
+    color: var(--muted);
+  }
+  footer {
+    margin-top: auto;
+    padding-top: 12px;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: end;
+    justify-content: space-between;
+    gap: 12px;
+    border-top: 1px solid var(--line);
+  }
+  .price {
+    margin: 12px 0 0;
+    font-weight: 700;
+    color: var(--text);
+    font-size: 0.9375rem;
+  }
+  .type {
+    display: block;
+    font-weight: 500;
+    color: var(--muted);
+    font-size: 0.875rem;
+  }
+  .more {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-weight: 700;
+    color: var(--anchor);
+    font-size: 0.9375rem;
+  }
+</style>

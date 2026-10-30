@@ -1,0 +1,28 @@
+---
+import PageHero from '../../components/PageHero.astro';
+import PostList from '../../components/PostList.astro';
+import Base from '../../layouts/Base.astro';
+import { getPosts } from '../../lib/posts';
+
+const posts = await getPosts();
+---
+
+<Base title="Resources" description="Practical IT, security, and HIPAA notes for long-term care and healthcare administrators.">
+  <PageHero eyebrow="Resources" title="Practical notes for busy administrators." lede="Short, plain-language articles on IT, security, and HIPAA for care facilities." />
+  <section class="section">
+    <div class="wrap prose-wide">
+      <PostList posts={posts} />
+      <p class="rss"><a href="/rss.xml">RSS feed</a></p>
+    </div>
+  </section>
+</Base>
+
+<style>
+  .prose-wide {
+    max-width: 860px;
+  }
+  .rss {
+    margin-top: 28px;
+    font-size: 0.9375rem;
+  }
+</style>

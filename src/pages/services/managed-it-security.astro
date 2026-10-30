@@ -1,0 +1,64 @@
+---
+import ServicePage from '../../layouts/ServicePage.astro';
+
+const reporting = [
+  { title: 'Open issues', body: 'What’s still open, who owns it, and when it’s due.' },
+  { title: 'Devices and updates', body: 'Which supported devices are current and which need attention.' },
+  { title: 'Accounts', body: 'New, changed, and removed accounts, so departures don’t slip through.' },
+  { title: 'Priorities', body: 'The few things worth doing next month, in plain language.' },
+];
+---
+
+<ServicePage
+  slug="managed-it-security"
+  lede="One accountable partner for employee access, supported devices, updates, and security follow-through, with clear reporting on open issues and priorities."
+  included={[
+    'Named ownership for staff accounts and access',
+    'Device inventory for supported workstations, laptops, and shared stations',
+    'Patch and update follow-up',
+    'Supported endpoint security controls',
+    'Vendor coordination, including your EHR and internet providers',
+    'A monthly status report',
+  ]}
+  boundaries={[
+    'Your plan states included licenses, device types, and backup scope',
+    'Monitoring coverage is listed in writing, by system',
+    'Remediation work outside the plan is quoted first',
+    'This is not a staffed 24-hour security operations center',
+  ]}
+  pricingNotes={[
+    'Priced per user or per device; your quote says which',
+    'Shared nursing-station devices and part-time staff are counted once, not twice',
+    'Minimum commitment, setup costs, and exclusions shown before you sign',
+  ]}
+>
+  <section class="section report">
+    <div class="wrap">
+      <span class="eyebrow">Monthly reporting</span>
+      <h2>One page you can actually read.</h2>
+      <p class="lede">Every month you get a short report that answers the questions an administrator, owner, or regional operator actually asks.</p>
+      <div class="grid grid-2 items">
+        {
+          reporting.map((r) => (
+            <div class="card">
+              <h3>{r.title}</h3>
+              <p class="muted">{r.body}</p>
+            </div>
+          ))
+        }
+      </div>
+    </div>
+  </section>
+</ServicePage>
+
+<style>
+  .report {
+    padding-top: 0;
+  }
+  .items {
+    margin-top: 32px;
+  }
+  .items p {
+    margin: 0;
+  }
+</style>

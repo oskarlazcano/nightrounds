@@ -1,0 +1,488 @@
+---
+import CtaBand from '../components/CtaBand.astro';
+import Faq from '../components/Faq.astro';
+import Icon from '../components/Icon.astro';
+import OvernightLog from '../components/OvernightLog.astro';
+import ServiceCard from '../components/ServiceCard.astro';
+import Base from '../layouts/Base.astro';
+import { coverageMessage, entryOffer, expertise, formatPrice, segments, services, site } from '../data/site';
+
+const flagship = services.filter((s) => s.flagship);
+const coverage = coverageMessage();
+
+const scenarios = [
+  {
+    icon: 'users' as const,
+    title: 'Shift change, locked out',
+    body: 'A night nurse’s password expired at 11 PM. Charting can’t wait for the help desk to open at 8.',
+  },
+  {
+    icon: 'ticket' as const,
+    title: 'The shared station stops working',
+    body: 'One workstation serves a whole unit. When it can’t reach the EHR, everyone on the floor feels it.',
+  },
+  {
+    icon: 'shield' as const,
+    title: 'Someone left; their access didn’t',
+    body: 'High turnover means accounts pile up. Each one still open is a risk and an audit question.',
+  },
+];
+
+const steps = [
+  { title: 'Discovery call', body: '20 minutes on your facility, current IT arrangements, and overnight gaps.' },
+  { title: 'Scoped review', body: 'We look at the agreed systems and write down what we found and what we could not see.' },
+  { title: 'Written coverage plan', body: 'Covered hours, supported systems, response targets, and who owns what, in plain language.' },
+  { title: 'Authorized onboarding', body: 'Named admin accounts, approved remote access, and handoff contacts set up with your sign-off.' },
+];
+---
+
+<Base>
+  <!-- 1. Hero -->
+  <section class="hero">
+    <div class="wrap hero-grid">
+      <div class="hero-copy">
+        <span class="eyebrow">Healthcare IT and overnight support</span>
+        <h1>IT, Security, and HIPAA for Care That Never&nbsp;Stops.</h1>
+        <p class="lede">
+          Managed technology and overnight support built for skilled nursing, assisted living, home health, hospice,
+          and other organizations that cannot wait until morning.
+        </p>
+        <div class="hero-actions">
+          <a class="btn btn-primary" href="/book-a-call"><Icon name="calendar" size={20} /> Book a Free 20-Minute Call</a>
+          <a class="text-link" href="/checklist">Get the Care-Facility IT Checklist <Icon name="arrow" size={18} /></a>
+        </div>
+        <ul class="serves" aria-label="Who we serve">
+          {segments.map((s) => <li>{s}</li>)}
+        </ul>
+      </div>
+      <div class="hero-art">
+        <OvernightLog />
+      </div>
+    </div>
+  </section>
+
+  <!-- 2. The problem -->
+  <section class="section">
+    <div class="wrap">
+      <div class="split">
+        <div>
+          <span class="eyebrow">The problem</span>
+          <h2>Staff need access, not another voicemail.</h2>
+        </div>
+        <p class="lede">
+          Shift changes, shared workstations, and urgent account problems do not wait for office hours. Most IT
+          providers are built for a 9-to-5 office. Your building runs all night.
+        </p>
+      </div>
+      <div class="grid grid-3 scenarios">
+        {
+          scenarios.map((s) => (
+            <div class="card scenario">
+              <span class="s-icon"><Icon name={s.icon} /></span>
+              <h3>{s.title}</h3>
+              <p class="muted">{s.body}</p>
+            </div>
+          ))
+        }
+      </div>
+    </div>
+  </section>
+
+  <!-- 3. The difference -->
+  <section class="section deep difference">
+    <div class="wrap split">
+      <div>
+        <span class="eyebrow">The difference</span>
+        <h2 class="claim">{coverage.heading}</h2>
+      </div>
+      <div>
+        <p class="lede">{coverage.body}</p>
+        <div class="window">
+          <Icon name="clock" />
+          <div>
+            <p class="w-label">Coverage window</p>
+            <p class="w-value">{site.coverage.window ?? 'Published here before launch, with holiday and weekend details.'}</p>
+          </div>
+        </div>
+        <p class="muted small">{site.coverage.planNote}</p>
+        <a class="text-link" href="/services/after-hours-help-desk">How overnight coverage works <Icon name="arrow" size={18} /></a>
+      </div>
+    </div>
+  </section>
+
+  <!-- 4. Three offers -->
+  <section class="section">
+    <div class="wrap">
+      <div class="section-head">
+        <div>
+          <span class="eyebrow">What we do</span>
+          <h2>Three ways to take IT off your plate.</h2>
+        </div>
+        <a class="text-link" href="/services">See all services <Icon name="arrow" size={18} /></a>
+      </div>
+      <div class="grid grid-3 grid-collapse">
+        {flagship.map((s) => <ServiceCard service={s} />)}
+      </div>
+      <aside class="entry">
+        <div>
+          <p class="entry-label">Not ready for a monthly plan?</p>
+          <h3>{entryOffer.name}</h3>
+          <p class="muted">{entryOffer.summary}</p>
+        </div>
+        <div class="entry-side">
+          <p class="entry-price">{formatPrice(entryOffer.price)}</p>
+          <a class="btn btn-ghost" href="/contact?type=assessment">Request an assessment</a>
+        </div>
+      </aside>
+    </div>
+  </section>
+
+  <!-- 5. How it starts -->
+  <section class="section steps-section">
+    <div class="wrap">
+      <span class="eyebrow">How it starts</span>
+      <h2>Four steps, all in writing.</h2>
+      <p class="lede">
+        You know what you are getting before anyone touches your systems. You stay responsible for approvals and site
+        access; we stay responsible for the work we agree to.
+      </p>
+      <ol class="steps">
+        {
+          steps.map((s, i) => (
+            <li>
+              <span class="num">{String(i + 1).padStart(2, '0')}</span>
+              <h3>{s.title}</h3>
+              <p class="muted">{s.body}</p>
+            </li>
+          ))
+        }
+      </ol>
+    </div>
+  </section>
+
+  <!-- 6. Trust and fit -->
+  <section class="section">
+    <div class="wrap split trust">
+      <div class="owner">
+        <div class="portrait" role={site.owner.photo ? undefined : 'img'} aria-label={site.owner.photo ? undefined : 'Photo of Elijah Owens coming soon'}>
+          {site.owner.photo ? <img src={site.owner.photo} alt={site.owner.name} width="480" height="560" loading="lazy" /> : <span>EO</span>}
+        </div>
+        <p class="owner-name">{site.owner.name}</p>
+        <p class="muted">{site.owner.role}, {site.legalName}</p>
+      </div>
+      <div>
+        <span class="eyebrow">Who you’ll work with</span>
+        <h2>A healthcare IT background, not a call center.</h2>
+        <p class="lede">
+          NightRounds is led by {site.owner.name}, whose background is in healthcare-regulated work: Medicaid program
+          administration and clinical research IT. You talk to the person who does the work.
+        </p>
+        <p class="strip-label">Experience in</p>
+        <ul class="strip">
+          {expertise.map((e) => <li class="pill">{e}</li>)}
+        </ul>
+        <div class="sample card">
+          <Icon name="clipboard" />
+          <div>
+            <p class="sample-title">See a sample readiness report</p>
+            <p class="muted">Built on synthetic data and labeled as a sample, so you can see exactly what you’d receive.</p>
+          </div>
+        </div>
+        <a class="text-link" href="/about">More about NightRounds <Icon name="arrow" size={18} /></a>
+      </div>
+    </div>
+  </section>
+
+  <!-- 7. FAQ and close -->
+  <section class="section faq-section">
+    <div class="wrap split">
+      <div>
+        <span class="eyebrow">Questions</span>
+        <h2>Straight answers.</h2>
+        <ul class="quick-links">
+          <li><a href="/pricing">Pricing</a></li>
+          <li><a href="/privacy">Privacy</a></li>
+          <li><a href="/contact">Contact</a></li>
+          {site.links.supportPortal && <li><a href={site.links.supportPortal}>Existing clients: get support</a></li>}
+        </ul>
+      </div>
+      <Faq />
+    </div>
+  </section>
+
+  <CtaBand />
+</Base>
+
+<style>
+  .hero {
+    position: relative;
+    padding-block: clamp(40px, 7vw, 96px) clamp(56px, 8vw, 104px);
+    background:
+      radial-gradient(70rem 40rem at 105% -10%, var(--anchor-soft), transparent 55%),
+      var(--bg);
+    overflow: hidden;
+  }
+  .hero-grid {
+    display: grid;
+    gap: clamp(40px, 6vw, 72px);
+    align-items: center;
+  }
+  @media (min-width: 1000px) {
+    .hero-grid {
+      grid-template-columns: 1.15fr 0.85fr;
+    }
+  }
+  .hero h1 {
+    max-width: 15ch;
+    color: var(--anchor-deep);
+  }
+  .hero-actions {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 16px 28px;
+    margin-top: 32px;
+  }
+  .serves {
+    list-style: none;
+    padding: 0;
+    margin: 40px 0 0;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px 22px;
+    color: var(--muted);
+    font-weight: 600;
+    font-size: 0.9375rem;
+  }
+  .serves li {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .serves li::before {
+    content: '';
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: var(--anchor);
+  }
+  .hero-art {
+    max-width: 480px;
+    width: 100%;
+    justify-self: center;
+  }
+
+  .scenarios {
+    margin-top: clamp(32px, 5vw, 56px);
+  }
+  .s-icon {
+    display: inline-grid;
+    place-items: center;
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    background: var(--surface-2);
+    color: var(--anchor);
+    margin-bottom: 18px;
+  }
+  .scenario p {
+    margin: 0;
+  }
+
+  .difference {
+    background:
+      radial-gradient(50rem 30rem at 0% 120%, color-mix(in srgb, var(--accent) 16%, transparent), transparent 60%),
+      var(--anchor-deep);
+  }
+  .claim {
+    font-size: clamp(2.4rem, 6vw, 4.5rem);
+    font-style: italic;
+    font-weight: 480;
+  }
+  .window {
+    display: flex;
+    gap: 14px;
+    align-items: flex-start;
+    margin: 28px 0 20px;
+    padding: 18px 20px;
+    border: 1px solid rgb(255 255 255 / 0.16);
+    border-radius: var(--radius);
+    background: rgb(255 255 255 / 0.04);
+  }
+  .window :global(svg) {
+    flex: none;
+    color: var(--accent);
+    margin-top: 2px;
+  }
+  .window p {
+    margin: 0;
+  }
+  .w-label {
+    font-size: 0.8125rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--on-deep-muted);
+  }
+  .w-value {
+    font-weight: 700;
+    font-size: 1.0625rem;
+  }
+  .small {
+    font-size: 0.9375rem;
+  }
+
+  .section-head {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    align-items: end;
+    gap: 16px 32px;
+    margin-bottom: clamp(28px, 4vw, 44px);
+  }
+  .section-head h2 {
+    margin: 0;
+  }
+  .entry {
+    margin-top: 20px;
+    display: grid;
+    gap: 20px 40px;
+    padding: clamp(22px, 3vw, 32px);
+    border-radius: var(--radius-lg);
+    border: 1.5px dashed color-mix(in srgb, var(--anchor) 35%, var(--line));
+  }
+  @media (min-width: 860px) {
+    .entry {
+      grid-template-columns: 1fr auto;
+      align-items: center;
+    }
+  }
+  .entry h3 {
+    margin-bottom: 8px;
+  }
+  .entry p:last-child {
+    margin: 0;
+    max-width: 62ch;
+  }
+  .entry-label {
+    margin: 0 0 6px;
+    font-weight: 700;
+    color: var(--anchor);
+    font-size: 0.9375rem;
+  }
+  .entry-side {
+    display: grid;
+    gap: 12px;
+    justify-items: start;
+  }
+  .entry-price {
+    margin: 0;
+    font-weight: 700;
+  }
+
+  .steps-section {
+    background: var(--surface-2);
+  }
+  .steps {
+    list-style: none;
+    padding: 0;
+    margin: clamp(32px, 5vw, 56px) 0 0;
+    display: grid;
+    gap: 20px;
+    counter-reset: step;
+  }
+  @media (min-width: 760px) {
+    .steps {
+      grid-template-columns: repeat(2, 1fr);
+    }
+  }
+  @media (min-width: 1080px) {
+    .steps {
+      grid-template-columns: repeat(4, 1fr);
+    }
+  }
+  .steps li {
+    padding-top: 22px;
+    border-top: 2px solid var(--anchor);
+  }
+  .num {
+    display: block;
+    font-family: var(--font-display);
+    font-size: 2rem;
+    color: var(--anchor);
+    margin-bottom: 8px;
+    font-variant-numeric: tabular-nums;
+  }
+
+  .owner {
+    max-width: 360px;
+  }
+  .portrait {
+    aspect-ratio: 6 / 7;
+    border-radius: var(--radius-lg);
+    background:
+      radial-gradient(circle at 70% 25%, color-mix(in srgb, var(--accent) 35%, transparent), transparent 45%),
+      linear-gradient(160deg, var(--anchor), var(--anchor-deep));
+    display: grid;
+    place-items: center;
+    overflow: hidden;
+    margin-bottom: 18px;
+  }
+  .portrait span {
+    font-family: var(--font-display);
+    font-size: 4.5rem;
+    color: var(--on-deep);
+    opacity: 0.85;
+  }
+  .portrait img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+  .owner-name {
+    font-family: var(--font-display);
+    font-size: 1.4rem;
+    margin: 0;
+  }
+  .strip-label {
+    margin: 28px 0 12px;
+    font-weight: 700;
+    font-size: 0.9375rem;
+  }
+  .strip {
+    list-style: none;
+    padding: 0;
+    margin: 0 0 28px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+  }
+  .sample {
+    display: flex;
+    gap: 16px;
+    align-items: flex-start;
+    margin-bottom: 24px;
+    background: var(--anchor-soft);
+    border-color: transparent;
+  }
+  .sample :global(svg) {
+    flex: none;
+    color: var(--anchor);
+  }
+  .sample p {
+    margin: 0;
+  }
+  .sample-title {
+    font-weight: 700;
+  }
+
+  .quick-links {
+    list-style: none;
+    padding: 0;
+    margin: 24px 0 0;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px 22px;
+    font-weight: 700;
+  }
+</style>

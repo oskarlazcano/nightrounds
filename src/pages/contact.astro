@@ -1,0 +1,137 @@
+---
+import Icon from '../components/Icon.astro';
+import LeadForm from '../components/LeadForm.astro';
+import PageHero from '../components/PageHero.astro';
+import Base from '../layouts/Base.astro';
+import { entryOffer, site } from '../data/site';
+---
+
+<Base title="Contact" description="Contact NightRounds about managed IT, overnight support, or a fixed-fee assessment.">
+  <PageHero
+    eyebrow="Contact"
+    title="Send us a note."
+    lede="For business inquiries and assessment requests. New inquiries are reviewed within one business day."
+  />
+
+  <section class="section">
+    <div class="wrap split">
+      <aside class="side">
+        <a class="card option" href="/book-a-call">
+          <Icon name="calendar" />
+          <span><strong>Prefer to talk?</strong> Book a free 20-minute call.</span>
+        </a>
+        {
+          site.contact.email && (
+            <a class="card option" href={`mailto:${site.contact.email}`}>
+              <Icon name="mail" />
+              <span>{site.contact.email}</span>
+            </a>
+          )
+        }
+        {
+          site.contact.phone && (
+            <a class="card option" href={`tel:${site.contact.phone.replace(/[^+\d]/g, '')}`}>
+              <Icon name="phone" />
+              <span>{site.contact.phone}</span>
+            </a>
+          )
+        }
+        <p class="muted small">
+          <strong>Existing clients:</strong> please use your support route for active issues, not this form, so your
+          request reaches the support queue.
+        </p>
+      </aside>
+
+      <div class="card form-wrap">
+        <div class="tabs" role="tablist" aria-label="Request type">
+          <button role="tab" id="tab-inquiry" aria-controls="panel-inquiry" aria-selected="true">General inquiry</button>
+          <button role="tab" id="tab-assessment" aria-controls="panel-assessment" aria-selected="false" tabindex="-1">Request an assessment</button>
+        </div>
+        <div role="tabpanel" id="panel-inquiry" aria-labelledby="tab-inquiry">
+          <LeadForm kind="inquiry" />
+        </div>
+        <div role="tabpanel" id="panel-assessment" aria-labelledby="tab-assessment" hidden>
+          <p class="muted"><strong>{entryOffer.name}.</strong> {entryOffer.summary}</p>
+          <LeadForm kind="assessment" />
+        </div>
+      </div>
+    </div>
+  </section>
+</Base>
+
+<script>
+  const tabs = [...document.querySelectorAll<HTMLButtonElement>('[role="tab"]')];
+  function select(tab: HTMLButtonElement, focus = false) {
+    for (const t of tabs) {
+      const on = t === tab;
+      t.setAttribute('aria-selected', String(on));
+      t.tabIndex = on ? 0 : -1;
+      document.getElementById(t.getAttribute('aria-controls')!)!.hidden = !on;
+    }
+    if (focus) tab.focus();
+  }
+  tabs.forEach((tab, i) => {
+    tab.addEventListener('click', () => select(tab));
+    tab.addEventListener('keydown', (e) => {
+      if (e.key !== 'ArrowRight' && e.key !== 'ArrowLeft') return;
+      const next = tabs[(i + (e.key === 'ArrowRight' ? 1 : tabs.length - 1)) % tabs.length];
+      select(next, true);
+    });
+  });
+  if (new URLSearchParams(location.search).get('type') === 'assessment') select(tabs[1]);
+</script>
+
+<style>
+  .side {
+    display: grid;
+    gap: 14px;
+    align-content: start;
+  }
+  .option {
+    display: flex;
+    gap: 14px;
+    align-items: center;
+    text-decoration: none;
+    color: var(--text);
+    padding: 20px 22px;
+  }
+  .option:hover {
+    border-color: var(--anchor);
+  }
+  .option :global(svg) {
+    flex: none;
+    color: var(--anchor);
+  }
+  .small {
+    font-size: 0.9375rem;
+    margin-top: 8px;
+  }
+  .tabs {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    padding: 6px;
+    margin-bottom: 28px;
+    border-radius: 999px;
+    background: var(--surface-2);
+    width: fit-content;
+    max-width: 100%;
+  }
+  [role='tab'] {
+    font: inherit;
+    font-weight: 700;
+    font-size: 0.9375rem;
+    border: 0;
+    border-radius: 999px;
+    padding: 10px 18px;
+    min-height: 44px;
+    background: transparent;
+    color: var(--muted);
+    cursor: pointer;
+  }
+  [role='tab'][aria-selected='true'] {
+    background: var(--surface);
+    color: var(--anchor-deep);
+    box-shadow: var(--shadow);
+  }
+</style>

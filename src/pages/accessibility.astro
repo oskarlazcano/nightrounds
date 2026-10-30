@@ -1,0 +1,23 @@
+---
+import Prose from '../layouts/Prose.astro';
+import { site } from '../data/site';
+---
+
+<Prose title="Accessibility statement" description={`Accessibility commitment for the ${site.name} website.`} eyebrow="Legal">
+  <p class="draft">
+    <strong>Placeholder.</strong> Final wording is supplied by the Owner. The commitments below match how the site is
+    built and tested.
+  </p>
+  <h2>Our target</h2>
+  <p>This website aims to meet the Web Content Accessibility Guidelines (WCAG) 2.1, level AA.</p>
+  <h2>What we do</h2>
+  <ul>
+    <li>Body text at 17px or larger, with clear heading structure.</li>
+    <li>Color contrast checked against AA ratios.</li>
+    <li>Every page works with a keyboard, with visible focus.</li>
+    <li>Forms have labels and error messages that are announced to screen readers.</li>
+    <li>Automated checks plus manual keyboard and screen-reader testing on changed pages.</li>
+  </ul>
+  <h2>Tell us about a problem</h2>
+  <p>If something on this site is hard to use, please <a href="/contact">contact us</a> and we’ll fix it.</p>
+</Prose>

@@ -35,6 +35,18 @@ responder, customer time zones, and a 2 AM test call are confirmed (packet secti
 - `functions/api/inquiry.js` — Cloudflare Pages Function for all forms: Turnstile, validation, rate limit, dedupe, delivery to Microsoft 365 via Graph.
 - `public/_headers` — security headers and CSP.
 
+## Design preview (GitHub Pages)
+
+Review link: https://oskarlazcano.github.io/nightrounds/ (noindexed; forms show a "not connected" notice).
+It serves the `gh-pages` branch and does not update on its own. To refresh it after changes, from Git Bash:
+
+```bash
+PUBLIC_PREVIEW=true npx astro build
+MSYS_NO_PATHCONV=1 node scripts/rebase.mjs /nightrounds
+touch dist/.nojekyll
+cd dist && git init -b gh-pages && git add -A && git commit -m "Preview build" && git push -f https://github.com/oskarlazcano/nightrounds.git gh-pages; rm -rf .git
+```
+
 ## Before launch (Owner)
 
 - Domain: replace `nightrounds.example` in `astro.config.mjs` and `src/data/site.ts`.
